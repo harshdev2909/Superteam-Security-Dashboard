@@ -1,5 +1,6 @@
 "use client"
 
+import axios from "axios"
 import { useState, useEffect } from "react"
 
 interface ContributionFormData {
@@ -83,7 +84,7 @@ export function useContributions() {
       setError(null)
 
       // In a real app, this would be an API call
-      // await axios.post('/api/contributions/submit', formData)
+      await axios.post('http://localhost:4000/contributions', formData)
 
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 1500))

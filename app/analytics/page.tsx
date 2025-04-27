@@ -1,31 +1,55 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ExploitTypeChart } from "@/components/charts/exploit-type-chart"
-import { FundsLostChart } from "@/components/charts/funds-lost-chart"
-import { ProtocolHeatmap } from "@/components/charts/protocol-heatmap"
-import { useAnalytics } from "@/hooks/use-analytics"
-import { LoadingSpinner } from "@/components/loading-spinner"
-import { Download } from "lucide-react"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ExploitTypeChart } from "@/components/charts/exploit-type-chart";
+import { FundsLostChart } from "@/components/charts/funds-lost-chart";
+import { ProtocolHeatmap } from "@/components/charts/protocol-heatmap";
+import { useAnalytics } from "@/hooks/use-analytics";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { Download } from "lucide-react";
 
 export default function AnalyticsPage() {
-  const { analytics, loading, error } = useAnalytics()
-  const [timeRange, setTimeRange] = useState("all")
+  const [timeRange, setTimeRange] = useState("all");
+  const [currency, setCurrency] = useState("usd");
+  const { analytics, loading, error } = useAnalytics(timeRange, currency);
 
   const handleExportCSV = () => {
-    // In a real implementation, this would generate and download a CSV file
-    alert("CSV export functionality would be implemented here")
-  }
+    if (!analytics) return;
+    const headers = [
+      "Metric,Value",
+      `Total Exploits,${analytics.totalExploits}`,
+      `Total Funds Lost,${analytics.totalFundsLost}${currency === 'usd' ? 'M' : ' SOL'}`,
+      `Average Response Time,${analytics.avgResponseTime} hours`,
+      `Most Common Type,${analytics.mostCommonType}`,
+      "",
+      "Exploit Types,Count,Color",
+      ...analytics.exploitTypes.map((type) => `${type.name},${type.value},${type.fill}`),
+      "",
+      "Funds Lost Over Time,Date,Value",
+      ...analytics.fundsLostOverTime.map((item) => `${item.date},${item.value}`),
+      "",
+      "Protocol Frequency,Protocol,Category,Count",
+      ...analytics.protocolFrequency.map((item) => `${item.protocol},${item.category},${item.count}`),
+    ];
+    const csv = headers.join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `analytics-${timeRange}-${currency}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   if (loading) {
     return (
       <div className="container flex items-center justify-center py-24">
         <LoadingSpinner />
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -34,7 +58,16 @@ export default function AnalyticsPage() {
         <h1 className="text-3xl font-bold mb-4">Analytics</h1>
         <div className="text-destructive">Error loading analytics data. Please try again.</div>
       </div>
-    )
+    );
+  }
+
+  if (!analytics) {
+    return (
+      <div className="container py-12 text-center">
+        <h1 className="text-3xl font-bold mb-4">Analytics</h1>
+        <div>No analytics data available.</div>
+      </div>
+    );
   }
 
   return (
@@ -50,7 +83,13 @@ export default function AnalyticsPage() {
               <TabsTrigger value="all">All Time</TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button variant="outline" size="sm" onClick={handleExportCSV}>
+          <Tabs value={currency} onValueChange={setCurrency}>
+            <TabsList>
+              <TabsTrigger value="usd">USD</TabsTrigger>
+              <TabsTrigger value="sol">SOL</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <Button variant="outline" size="sm" onClick={handleExportCSV} disabled={!analytics}>
             <Download className="mr-2 h-4 w-4" />
             Export CSV
           </Button>
@@ -71,7 +110,11 @@ export default function AnalyticsPage() {
             <CardTitle className="text-sm font-medium">Total Funds Lost</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${analytics.totalFundsLost.toLocaleString()}M</div>
+            <div className="text-2xl font-bold">
+              {currency === 'usd'
+                ? `$${analytics.totalFundsLost.toLocaleString()}M`
+                : `${analytics.totalFundsLost.toLocaleString()} SOL`}
+            </div>
           </CardContent>
         </Card>
         <Card>
@@ -126,5 +169,5 @@ export default function AnalyticsPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

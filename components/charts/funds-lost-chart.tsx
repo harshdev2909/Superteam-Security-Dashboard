@@ -1,23 +1,26 @@
-"use client"
+"use client";
 
-import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 interface FundsLostData {
-  date: string
-  value: number
+  date: string;
+  value: number;
 }
 
 interface FundsLostChartProps {
-  data: FundsLostData[]
+  data: FundsLostData[];
+  currency?: "sol" | "usd"; // Make currency optional
 }
 
-export function FundsLostChart({ data }: FundsLostChartProps) {
+export function FundsLostChart({ data, currency = "usd" }: FundsLostChartProps) {
+  const currencyLabel = currency === "sol" ? "SOL" : "USD";
+
   return (
     <ChartContainer
       config={{
         funds: {
-          label: "Funds Lost (USD)",
+          label: `Funds Lost (${currencyLabel})`,
           color: "hsl(var(--chart-2))",
         },
       }}
@@ -35,13 +38,22 @@ export function FundsLostChart({ data }: FundsLostChartProps) {
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-          <YAxis tickFormatter={(value) => `$${value}M`} tick={{ fontSize: 12 }} />
-          <ChartTooltip content={<ChartTooltipContent formatter={(value) => `$${value}M`} />} />
+          <YAxis
+            tickFormatter={(value) => (currency === "usd" ? `$${value}M` : `${value} SOL`)}
+            tick={{ fontSize: 12 }}
+          />
+          <ChartTooltip
+            content={
+              <ChartTooltipContent
+                formatter={(value) => (currency === "usd" ? `$${value}M` : `${value} SOL`)}
+              />
+            }
+          />
           <Legend />
           <Area
             type="monotone"
             dataKey="value"
-            name="Funds Lost"
+            name={`Funds Lost (${currencyLabel})`}
             stroke="var(--color-funds)"
             fill="var(--color-funds)"
             fillOpacity={0.2}
@@ -49,5 +61,5 @@ export function FundsLostChart({ data }: FundsLostChartProps) {
         </AreaChart>
       </ResponsiveContainer>
     </ChartContainer>
-  )
+  );
 }

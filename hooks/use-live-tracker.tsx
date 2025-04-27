@@ -28,7 +28,7 @@ export function useLiveTracker() {
     let reconnectTimeout: NodeJS.Timeout | null = null;
 
     const connectWebSocket = () => {
-      ws = new WebSocket('ws://localhost:4000/api/live-tracker');
+      ws = new WebSocket('https://superteam-security-dashboard-backend.onrender.com/api/live-tracker');
 
       ws.onopen = () => {
         console.log('Connected to live tracker WebSocket');

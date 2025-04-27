@@ -24,7 +24,7 @@ export function useAnalytics(timeRange: string = "all", currency: string = "usd"
         setLoading(true);
         setError(null);
 
-        const response = await axios.get<AnalyticsData>('http://localhost:4000/analytics', {
+        const response = await axios.get<AnalyticsData>('https://superteam-security-dashboard-backend.onrender.com/analytics', {
           params: { timeRange, currency },
         });
         setAnalytics(response.data);

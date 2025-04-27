@@ -83,8 +83,8 @@ export function useContributions() {
       setLoading(true)
       setError(null)
 
-      // In a real app, this would be an API call
-      await axios.post('http://localhost:4000/contributions', formData)
+      
+      await axios.post('https://superteam-security-dashboard-backend.onrender.com/contributions', formData)
 
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 1500))

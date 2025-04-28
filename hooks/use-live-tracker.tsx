@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 interface LiveAlert {
+  amount(amount: any): unknown;
   id: string;
   timestamp: string;
   protocol: string;

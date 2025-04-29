@@ -55,7 +55,7 @@ export default function Home() {
             animate={{ x: "-100%" }}
             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
           >
-            Alert: {alerts[0]?.protocol || 'Unknown Protocol'} - ${(alerts[0]?.estimatedLoss) || 4579285714.3}M detected!
+            Alert: {alerts[0]?.protocol || 'Unknown Protocol'} - {(alerts[0]?.estimatedLoss) || 4579285714.3} detected!
           </motion.p>
         </motion.div>
       ) : (
@@ -75,7 +75,10 @@ export default function Home() {
                 Track Solana Exploits in Real-Time
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Monitor, analyze, and understand security vulnerabilities in the Solana ecosystem
+                Monitor, analyze, and understand security vulnerabilities in the Solana ecosystem 
+              </p>
+              <p className="mx-auto max-w-[850px] text-muted-foreground md:text-xl text-green-500">
+               It's backend is deployed on a free instance so it will take upto 50 sec for initial render.
               </p>
             </div>
             <div className="space-x-4">

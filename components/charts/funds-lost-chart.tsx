@@ -13,6 +13,8 @@ interface FundsLostChartProps {
   currency?: "sol" | "usd"; // Make currency optional
 }
 
+// ... existing code ...
+
 export function FundsLostChart({ data, currency = "usd" }: FundsLostChartProps) {
   const currencyLabel = currency === "sol" ? "SOL" : "USD";
 
@@ -36,11 +38,22 @@ export function FundsLostChart({ data, currency = "usd" }: FundsLostChartProps) 
             bottom: 20,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+          <CartesianGrid 
+            strokeDasharray="3 3" 
+            vertical={false} 
+            stroke="hsl(var(--muted))" 
+          />
+          <XAxis 
+            dataKey="date" 
+            tick={{ fontSize: 12 }}
+            tickLine={false}
+            axisLine={{ stroke: "hsl(var(--muted))" }}
+          />
           <YAxis
             tickFormatter={(value) => (currency === "usd" ? `$${value}M` : `${value} SOL`)}
             tick={{ fontSize: 12 }}
+            tickLine={false}
+            axisLine={{ stroke: "hsl(var(--muted))" }}
           />
           <ChartTooltip
             content={
@@ -48,8 +61,13 @@ export function FundsLostChart({ data, currency = "usd" }: FundsLostChartProps) 
                 formatter={(value) => (currency === "usd" ? `$${value}M` : `${value} SOL`)}
               />
             }
+            cursor={{ stroke: "hsl(var(--muted))", strokeWidth: 1 }}
           />
-          <Legend />
+          <Legend 
+            verticalAlign="top" 
+            height={36}
+            wrapperStyle={{ paddingBottom: "1rem" }}
+          />
           <Area
             type="monotone"
             dataKey="value"
@@ -57,6 +75,8 @@ export function FundsLostChart({ data, currency = "usd" }: FundsLostChartProps) 
             stroke="var(--color-funds)"
             fill="var(--color-funds)"
             fillOpacity={0.2}
+            animationDuration={1000}
+            animationBegin={0}
           />
         </AreaChart>
       </ResponsiveContainer>

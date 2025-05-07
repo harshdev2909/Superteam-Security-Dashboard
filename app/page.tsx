@@ -77,7 +77,7 @@ export default function Home() {
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
                 Monitor, analyze, and understand security vulnerabilities in the Solana ecosystem 
               </p>
-              <p className="mx-auto max-w-[850px] text-muted-foreground md:text-xl text-green-500">
+              <p className="mx-auto max-w-[850px] text-muted-foreground md:text-xl text-red-700">
                It's backend is deployed on a free instance so it will take upto 50 sec for initial render.
               </p>
             </div>
